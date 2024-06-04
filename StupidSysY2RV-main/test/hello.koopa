@@ -1,0 +1,184 @@
+decl @getint(): i32
+
+decl @getch(): i32
+
+decl @getarray(*i32): i32
+
+decl @putint(i32)
+
+decl @putch(i32)
+
+decl @putarray(i32, *i32)
+
+decl @starttime()
+
+decl @stoptime()
+
+fun @my_getint(): i32 {
+%entry_my_getint:
+  @sum = alloc i32
+  store 0, @sum
+  @c = alloc i32
+  jump %while_entry
+
+%while_entry:
+  br 1, %while_body, %end
+
+%while_body:
+  %0 = call @getch()
+  %1 = sub %0, 48
+  store %1, @c
+  %temp = alloc i32
+  store 1, %temp
+  %2 = load @c
+  %3 = lt %2, 0
+  %4 = eq %3, 0
+  br %4, %true, %end_0
+
+%true:
+  %5 = load @c
+  %6 = gt %5, 9
+  %7 = ne %6, 0
+  store %7, %temp
+  jump %end_0
+
+%end_0:
+  %8 = load %temp
+  br %8, %true_0, %false
+
+%true_0:
+  jump %while_entry
+
+%false:
+  jump %end
+
+%end:
+  %9 = load @c
+  store %9, @sum
+  jump %while_entry_0
+
+%while_entry_0:
+  br 1, %while_body_0, %end_1
+
+%while_body_0:
+  %10 = call @getch()
+  %11 = sub %10, 48
+  store %11, @c
+  %temp_0 = alloc i32
+  store 0, %temp_0
+  %12 = load @c
+  %13 = ge %12, 0
+  %14 = ne %13, 0
+  br %14, %true_1, %end_2
+
+%true_1:
+  %15 = load @c
+  %16 = le %15, 9
+  %17 = ne %16, 0
+  store %17, %temp_0
+  jump %end_2
+
+%end_2:
+  %18 = load %temp_0
+  br %18, %true_2, %false_0
+
+%true_2:
+  %19 = load @sum
+  %20 = mul %19, 10
+  %21 = load @c
+  %22 = add %20, %21
+  store %22, @sum
+  jump %end_3
+
+%end_3:
+  jump %while_entry_0
+
+%false_0:
+  jump %end_1
+
+%end_1:
+  %23 = load @sum
+  ret %23
+
+%end_4:
+  jump %while_entry
+}
+
+fun @my_putint(@a: i32) {
+%entry_my_putint:
+  @a_0 = alloc i32
+  store @a, @a_0
+  @b = alloc [i32, 16]
+  @i = alloc i32
+  store 0, @i
+  jump %while_entry
+
+%while_entry:
+  %24 = load @a_0
+  %25 = gt %24, 0
+  br %25, %while_body, %end
+
+%while_body:
+  %26 = load @a_0
+  %27 = mod %26, 10
+  %28 = add %27, 48
+  %29 = load @i
+  %30 = getelemptr @b, %29
+  store %28, %30
+  %31 = load @a_0
+  %32 = div %31, 10
+  store %32, @a_0
+  %33 = load @i
+  %34 = add %33, 1
+  store %34, @i
+  jump %while_entry
+
+%end:
+  jump %while_entry_0
+
+%while_entry_0:
+  %35 = load @i
+  %36 = gt %35, 0
+  br %36, %while_body_0, %end_0
+
+%while_body_0:
+  %37 = load @i
+  %38 = sub %37, 1
+  store %38, @i
+  %39 = load @i
+  %40 = getelemptr @b, %39
+  %41 = load %40
+  call @putch(%41)
+  jump %while_entry_0
+
+%end_0:
+  ret
+}
+
+fun @main(): i32 {
+%entry_main:
+  @n = alloc i32
+  %42 = call @my_getint()
+  store %42, @n
+  jump %while_entry
+
+%while_entry:
+  %43 = load @n
+  %44 = gt %43, 0
+  br %44, %while_body, %end
+
+%while_body:
+  @m = alloc i32
+  %45 = call @my_getint()
+  store %45, @m
+  %46 = load @m
+  call @my_putint(%46)
+  call @putch(10)
+  %47 = load @n
+  %48 = sub %47, 1
+  store %48, @n
+  jump %while_entry
+
+%end:
+  ret 0
+}
